@@ -1,6 +1,6 @@
 # Adjusting the Existing Exoplanet Population to Get a Drift Rate Distribution
 
-To get from the subset of a few 100 planets to the full ~4000 exoplanets in the NEA, we need to account for the missing values in the NEA. From Megan's investigative work, we know that (for all confirmed/candidates/OIs)...
+To get from the subset of a few 100 planets to the full ~4000 exoplanets in the NEA, we need to account for the missing values in the NEA. From Megan's investigative work, we know that (for all 29000 rows)... **[Sofia will update this for the ~4000 planet sample once Megan has gotten those values]**
 
 1) Null Longitude of Ascending Node = ~100% - add by drawing from a uniform distribution across all angles - DONE
 2) Null Argument of Periapse = ~90% - add by drawing from a uniform distribution across all angles
@@ -12,16 +12,18 @@ To get from the subset of a few 100 planets to the full ~4000 exoplanets in the 
 
 Questions for Howard: 
 
-- Why are the period and semimajor axis numbers so different?
-- For exoplanets that are null in only 1 of period, stellar mass, and semimajor axis, would it be valid to use the stellar mass + period to get the semimajor axis (or vice versa)?
-- **How do we deal with exoplanet parameters that are not independent e.g., eccentricity and distance (Kipping 2013), or eccentricity and planet size (Kane et al. 2012)?**
+- Why are the period and semimajor axis numbers so different? ANSWER: That's weird, let's check back in once we have used the ~4000 planet sample
+- For exoplanets that are null in only 1 of period, stellar mass, and semimajor axis, would it be valid to use the stellar mass + period to get the semimajor axis (or vice versa)? ANSWER: Probably, but also, we would expect the papers to have done this already: check back in later
+- **How do we deal with exoplanet parameters that are not independent e.g., eccentricity and distance (Kipping 2013), or eccentricity and planet size (Kane et al. 2012)?** ANSWER: Howard and Sofia will think about this more - don't worry about it yet!
 
-##To-Dos
-- Write a function that inputs a histogram of drift rates and a % of values included, and figures out the drift rate limits (-nu_dot to nu_dot) which encompass that percentage of the histogram
-- Figure out null numbers for each parameter in the ~4000 confirmed planet sample
-- How many are null in only 1 of the following: period, stellar mass, and semimajor axis? How many are null in 2 or more? If the number of null in 1,2,3 of these parameters is low, remove them from the sample. Otherwise, try to 
+## To-Dos
+- Fix up the TRAPPIST plots: color-code the lines, fix up the x-axis, color-code (same colors) the histogram
+- Download the new ~4000 planet sample
+- Figure out null numbers for each parameter in the ~4000 confirmed planet sample - make sure that the semimajor and period percentages are low (<5%). If not, we'll investigate.
+- Re-do 2 histograms with the ~4000 planet sample (only planets without LoAN, then add planets without LoAn, AoP, or inclination)
+- Write a function that inputs a histogram of drift rates and a % of values included, and figures out the drift rate limits (-nu_dot to nu_dot) which encompass that percentage of the histogram - put that information on the plot
 - Use a pie chart on the ~4000 confirmed planets to see which are the major methods and also facilities (two separate columns, two separate pie charts)
-- 
+- Sofia will investigate the eccentricity distribution for transiting planets
 
 # Things for Later
 
