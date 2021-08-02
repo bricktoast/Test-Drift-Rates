@@ -5,7 +5,7 @@ In order to make a 100%-simulated exoplanet population for drift rates, we will 
 1) Move existing distribution-functions into a new notebook: longitude of ascending node, argument of periapse, and inclination
 2) Implement new distribution-functions for eccentricity, stellar mass, and semi-major axis/period based on the information from the SysSym project papers (group includes Danley Hsu, Matthias He, Eric Ford, and Darin Ragozzine).
 - Eccentricity: ??? (REFERENCE?)
-- Stellar Mass: Salpeter IMF (REFERENCE?)
+- Stellar Mass: To figure out the distribution of stellar masses in the galaxy, we use something called an "Initial Mass Function" (or IMF). The most famous IMF was the first one, the Salpeter IMF from like 1951 or something. Apparently, the most up-to-date version that people use is the Kroupa IMF (https://academic.oup.com/mnras/article/322/2/231/962260), so that's what we can go with. Look at Section 2.2 (Equation 2) for what the "Kroupa multiple-part power-law IMF" is. Let me know if you have questions implementing or deciphering that paper.
 - Semimajor Axis/Period: ??? (REFERENCE?)
 3) Independently (SOFIA: am checking if this is valid) draw a few thousand values from each distribution and combine them into fake exoplanet rows.
 4) Get their drift rates with your existing code.
