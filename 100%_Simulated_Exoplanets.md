@@ -1,15 +1,24 @@
 # Simulating an Exoplanet Population to Get a Drift Rate Distribution
 
-In order to make a 100%-simulated exoplanet population for drift rates, we will need to correct for observational biases. Sofia came up with a procedure for this originally that... it turned out was probably the wrong way to approach the problem. After consulting with Dr. Mariah MacDonald, I have a new plan.
+In order to make a 100%-simulated exoplanet population for drift rates, we will need to correct for observational biases. Sofia came up with a procedure for this originally that... it turned out was probably the wrong way to approach the problem. After consulting with Dr. Mariah MacDonald and Matthias He, I have a new plan.
 
 1) Move existing distribution-functions into a new notebook: longitude of ascending node, argument of periapse, and inclination
-2) Implement new distribution-functions for eccentricity, stellar mass, and semi-major axis/period based on the information from the SysSym project papers (group includes Danley Hsu, Matthias He, Eric Ford, and Darin Ragozzine).
-- Eccentricity: ??? (REFERENCE?)
-- Stellar Mass: To figure out the distribution of stellar masses in the galaxy, we use something called an "Initial Mass Function" (or IMF). The most famous IMF was the first one, the Salpeter IMF from like 1951 or something. Apparently, the most up-to-date version that people use is the Kroupa IMF (https://academic.oup.com/mnras/article/322/2/231/962260), so that's what we can go with. Look at Section 2.2 (Equation 2) for what the "Kroupa multiple-part power-law IMF" is. Let me know if you have questions implementing or deciphering that paper.
-- Semimajor Axis/Period: ??? (REFERENCE?)
-3) Independently (SOFIA: am checking if this is valid) draw a few thousand values from each distribution and combine them into fake exoplanet rows.
-4) Get their drift rates with your existing code.
+2) Implement new distribution-functions for eccentricity, stellar mass, and semi-major axis/period based on the information from the SysSym project papers (group includes Danley Hsu, Matthias He, Eric Ford, and Darin Ragozzine). This is the bulk of the work. See sections below:
+
+## Eccentricity
+Turns out the Kipping paper with the beta distribution is a bit outdated, so we should move to using one of the SysSim papers. The most up-to-date eccentricity distribution is from Section 3.5 of [He, Ford, and Ragozzine 2019](https://arxiv.org/pdf/1907.07773v2.pdf). This study was done by extrapolating from Kepler data, which means that it's probably underrepresenting giant planets, which may have a different distribution. Unfortunately, there's very little work on giant planet eccentricity distributions: as we get more TESS data, that will change. The other thing to mention is that eccentricity is related to planet multiplicity and semimajor axis: planets in multiplanet systems are more likely to be circular (for stability), as are planets that are very close to their star (tidal circularization). We're going to neglect those complexities for now. All of this is perfectly okay for our purposes, just something to mention in the Methods/Future Work sections. The equation to use, based on He, Ford, and Ragozzine 2019, is a [Rayleigh distribution](https://en.wikipedia.org/wiki/Rayleigh_distribution), with sigma_e = 0.02. The sigma_e parameter is called "scale" in the [NumPy random variable-drawing implementation](https://numpy.org/doc/stable/reference/random/generated/numpy.random.rayleigh.html).
+
+## Stellar Mass
+To figure out the distribution of stellar masses in the galaxy, we use something called an "Initial Mass Function" (or IMF). The most famous IMF was the first one, the Salpeter IMF from like 1951 or something. Apparently, the most up-to-date version that people use is the Kroupa IMF [(original paper)](https://academic.oup.com/mnras/article/322/2/231/962260), so that's what we can go with. The [Wikipedia article](https://en.wikipedia.org/wiki/Initial_mass_function#Kroupa_(2001)) gives a good definition for it; it's something called a "broken power law", which consists of multiple different power laws depending on where you are in the x (mass) axis. Remember that bodies smaller than 0.08 Solar Masses don't burn hydrogen, and are brown dwarfs, not stars. So we can make 0.08 Solar Masses our lower bound, with an upper bound of ~150 Solar Masses (should probably find a definitive reference for this value for the paper). With a little tweaking, you should be able to use the [NumPy random variable-drawing implementation for a power-law](https://numpy.org/doc/stable/reference/random/generated/numpy.random.power.html) to make this work.
+
+## Semimajor Axis/Period 
+The best understanding right now is that the semimajor-axis / period distribution is best modeled as a broken power law, just like the stellar mass, with the break at a period of about 10 days. In [He, Ford, and Ragozzine 2019](https://arxiv.org/pdf/1907.07773v2.pdf), they simplify this by using a single power-law between 3 and 300 days. For our purposes, the simplified version should be good enough, and we can use the same NumPy implementation as in the Stellar Mass section. So the minimum and maximum bounds are 3 and 300, and the "alpha" parameter for the model is 0.2.
+
+3) Once these three distributions are implemented, independently draw a few thousand values from each distribution and combine them into fake exoplanet rows. Because the drift rates produced by one planet in a system won't be affected by the other planets in the system, we can get away with pretending that each system is only a one-planet, one-star affair. This is definitely an assumption, but if we make it, then "drawing those values [semimajor axis, eccentricity, etc.] independently is a tolerable assumption" (quoting Matthias He here). Trying to de-bias the distribution of planetary _systems_ is a giant task, Matthias's whole PhD thesis, and nowhere near a solved problem. So sidestepping that problem entirely by only assuming one-planet systems is a good idea!
+4)  Get the drift rate histogram with your existing code.
 5) Profit!!!
+
+# Old info
 
 OLD PROCEDURE:
 ~~1) What are the major surveys that provide the data that we're using (try to get, say 90% of known exoplanets)? ~~
@@ -20,8 +29,6 @@ OLD PROCEDURE:
 ~~6) Make them into distributions that we can draw from using Kernel Density Estimation (KDE)~~
 ~~7) Draw thousands of planets from the corrected distributions~~
 ~~8) Profit!~~
-
-# Old info
 
 ## Adjusting the Existing Exoplanet Population to Get a Drift Rate Distribution
 
